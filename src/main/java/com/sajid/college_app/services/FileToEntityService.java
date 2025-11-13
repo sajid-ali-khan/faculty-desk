@@ -26,6 +26,7 @@ public class FileToEntityService {
     private final ClassService classService;
     private final StudentService studentService;
     private final SubjectService subjectService;
+    private final ClassSubjectService classSubjectService;
 
     public void bulkUploadStudents(MultipartFile file) throws CsvValidationException {
         List<RawStudent> rawStudents = csvProcessingService.process(file, RawStudent.class);
@@ -38,5 +39,7 @@ public class FileToEntityService {
         List<Course> rawCourses = csvProcessingService.process(file, Course.class);
         Map<SubjectKey, Subject> subjectMap = subjectService.bulkSaveSubjects(rawCourses);
         log.info("Subjects saved successfully.");
+        classSubjectService.bulkSaveClassSubjects(rawCourses, subjectMap);
+        log.info("Class subjects saved successfully.");
     }
 }

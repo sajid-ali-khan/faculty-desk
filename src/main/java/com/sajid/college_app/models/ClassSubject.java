@@ -9,7 +9,10 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "class_subjects",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"class_id", "subject_id", "faculty_id"})})
+        uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"class_id", "subject_id", "faculty_id"}),
+        @UniqueConstraint(columnNames = {"class_id", "subject_id"}),
+        })
 public class ClassSubject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +27,7 @@ public class ClassSubject {
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn
     private Faculty faculty;
 
     @OneToMany(mappedBy = "classSubject", cascade = CascadeType.REMOVE)
