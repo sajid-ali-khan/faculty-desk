@@ -1,10 +1,9 @@
 package com.sajid.college_app.services;
 
-import com.sajid.college_app.dtos.keys.BranchKey;
+import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.models.Branch;
 import com.sajid.college_app.models.Scheme;
 import com.sajid.college_app.models.SimpleBranch;
-import com.sajid.college_app.models.raw.Course;
 import com.sajid.college_app.models.raw.Student;
 import com.sajid.college_app.repositories.BranchRepository;
 import com.sajid.college_app.repositories.SchemeRepository;

@@ -1,4 +1,4 @@
-package com.sajid.college_app.dtos.keys;
+package com.sajid.college_app.services.keys;
 
 public record BranchKey (
         String schemeCode,
