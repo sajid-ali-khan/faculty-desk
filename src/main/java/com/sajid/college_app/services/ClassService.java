@@ -2,7 +2,7 @@ package com.sajid.college_app.services;
 
 import com.sajid.college_app.models.Branch;
 import com.sajid.college_app.models.Class;
-import com.sajid.college_app.models.raw.Student;
+import com.sajid.college_app.models.raw.RawStudent;
 import com.sajid.college_app.repositories.ClassRepository;
 import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.services.keys.ClassKey;
@@ -21,7 +21,7 @@ public class ClassService {
     private final ClassRepository classRepository;
 
     @Transactional
-    public Map<ClassKey, Class> bulkSaveClasses(List<Student> rawStudents, Map<BranchKey, Branch> branchMap) {
+    public Map<ClassKey, Class> bulkSaveClasses(List<RawStudent> rawStudents, Map<BranchKey, Branch> branchMap) {
         Map<ClassKey, Class> classMap = classRepository.findAll().stream().collect(Collectors.toMap(
                 c -> new ClassKey(
                         new BranchKey(
@@ -42,6 +42,7 @@ public class ClassService {
                         rs.getSem(),
                         rs.getSection()
                 ))
+                .distinct()
                 .filter(key -> !classMap.containsKey(key) && branchMap.containsKey(key.branchKey()))
                 .map(key -> {
                     Class _class = new Class();

@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student {
+public class RawStudent {
     @CsvBindByName(column = "roll", required = true)
     private String roll;
 

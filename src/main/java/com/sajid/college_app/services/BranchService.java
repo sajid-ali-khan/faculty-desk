@@ -4,7 +4,7 @@ import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.models.Branch;
 import com.sajid.college_app.models.Scheme;
 import com.sajid.college_app.models.SimpleBranch;
-import com.sajid.college_app.models.raw.Student;
+import com.sajid.college_app.models.raw.RawStudent;
 import com.sajid.college_app.repositories.BranchRepository;
 import com.sajid.college_app.repositories.SchemeRepository;
 import com.sajid.college_app.repositories.SimpleBranchRepository;
@@ -25,7 +25,7 @@ public class BranchService {
     private final SimpleBranchRepository simpleBranchRepository;
 
     @Transactional
-    public Map<BranchKey, Branch> bulkSaveBranches(List<Student> rawStudents){
+    public Map<BranchKey, Branch> bulkSaveBranches(List<RawStudent> rawStudents){
         Map<String, Scheme> schemeMap = schemeRepository.findAll().stream().collect(Collectors.toMap(Scheme::getSchemeCode, Function.identity()));
         Map<Integer, SimpleBranch> simpleBranchMap = simpleBranchRepository.findAll().stream().collect(Collectors.toMap(SimpleBranch::getBranchCode, Function.identity()));
 

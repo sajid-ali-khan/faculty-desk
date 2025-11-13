@@ -1,6 +1,5 @@
 package com.sajid.college_app.controllers;
 
-import com.sajid.college_app.services.BranchService;
 import com.sajid.college_app.services.FileToEntityService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -12,11 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/branches")
+@RequestMapping("/api/uploads")
 @AllArgsConstructor
-public class BranchController {
-    private final BranchService branchService;
+public class UploadsController {
     private final FileToEntityService fileToEntityService;
 
-
+    @SneakyThrows
+    @PostMapping("/students")
+    public ResponseEntity<?> bulkUploadBranches(@RequestParam("file") MultipartFile file){
+        fileToEntityService.bulkUploadStudents(file);
+        return ResponseEntity.ok().build();
+    }
 }
