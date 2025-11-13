@@ -20,21 +20,17 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "faculties",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"facultyCode"})})
+@Table(name = "faculties")
 public class Faculty implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Column(nullable = false, unique = true)
     private String facultyCode;
 
     private String name;
-
     private String gender;
-
     private String salutation;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +39,6 @@ public class Faculty implements UserDetails {
     @JsonIgnore
     @Column(nullable = false)
     private String passwordHash;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
