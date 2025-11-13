@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -32,8 +33,8 @@ public class Session {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "session")
-    List<AttendanceRecord> attendanceRecords;
+    @OneToMany(mappedBy = "session", cascade = CascadeType.REMOVE)
+    List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 
 
     @PrePersist

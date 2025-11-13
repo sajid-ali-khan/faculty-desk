@@ -3,6 +3,7 @@ package com.sajid.college_app.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,8 +25,8 @@ public class Class {
     @Column(nullable = false)
     private String section;
 
-    @OneToMany(mappedBy = "_class")
-    List<ClassSubject> classSubjects;
+    @OneToMany(mappedBy = "_class", cascade = CascadeType.REMOVE)
+    List<ClassSubject> classSubjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "_class")
     List<Student> students;

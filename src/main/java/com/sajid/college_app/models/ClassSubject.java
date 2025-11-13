@@ -3,6 +3,9 @@ package com.sajid.college_app.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "class_subjects",
@@ -20,7 +23,10 @@ public class ClassSubject {
     @JoinColumn(nullable = false)
     private Subject subject;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Faculty faculty;
+
+    @OneToMany(mappedBy = "classSubject", cascade = CascadeType.REMOVE)
+    List<Session> sessionList = new ArrayList<>();
 }

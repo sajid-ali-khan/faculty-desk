@@ -32,12 +32,11 @@ public class AdminSeeder implements ApplicationRunner {
             return;
         }
 
-        Faculty admin = Faculty.builder()
-                .facultyCode(adminUName)
-                .passwordHash(passwordEncoder.encode(adminPassword))
-                .role(FacultyRole.ADMIN)
-                .name("admin")
-                .build();
+        Faculty admin = new Faculty();
+        admin.setFacultyCode(adminUName);
+        admin.setPasswordHash(passwordEncoder.encode(adminPassword));
+        admin.setRole(FacultyRole.ADMIN);
+        admin.setName("admin");
 
         facultyRepository.save(admin);
         log.info("Admin created successfully");
