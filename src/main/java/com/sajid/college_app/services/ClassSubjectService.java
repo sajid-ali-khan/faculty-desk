@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,13 +33,14 @@ public class ClassSubjectService {
         Map<BranchKey, Branch> branchMap = branchRepository.findAll().stream()
                 .collect(Collectors.toMap(b -> new BranchKey(b.getScheme().getSchemeCode(), b.getSimpleBranch().getBranchCode()), Function.identity()));
 
-        Map<ClassSubjectKey, ClassSubject> classSubjectMap = classSubjectRepository.findAll().stream()
-                .collect(Collectors.toMap(cs -> new ClassSubjectKey(
+        Set<ClassSubjectKey> classSubjectMap = classSubjectRepository.findAll().stream()
+                .map(cs -> new ClassSubjectKey(
                         new BranchKey(cs.get_class().getBranch().getScheme().getSchemeCode(),
                                 cs.get_class().getBranch().getSimpleBranch().getBranchCode()),
                         cs.get_class().getSemester(),
                         new SubjectKey(cs.getSubject().getShortForm(), cs.getSubject().getFullForm())
-                ), Function.identity()));
+                ))
+                .collect(Collectors.toSet());
 
         List<ClassSubject> newClassSubjects = rawCourses.stream()
                 .map(rc -> new ClassSubjectKey(
@@ -53,7 +55,7 @@ public class ClassSubjectService {
                         )
                 ))
                 .distinct()
-                .filter(key -> !classSubjectMap.containsKey(key))
+                .filter(key -> !classSubjectMap.contains(key))
                 .filter(key -> branchMap.containsKey(key.branchKey()) && subjectMap.containsKey(key.subjectKey()))
                 .flatMap(key -> {
                     Branch branch = branchMap.get(key.branchKey());

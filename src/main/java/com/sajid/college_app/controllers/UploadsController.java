@@ -29,4 +29,11 @@ public class UploadsController {
         fileToEntityService.bulkUploadCourses(file);
         return ResponseEntity.ok().build();
     }
+
+    @SneakyThrows
+    @PostMapping("/employees")
+    public ResponseEntity<?> bulkUploadEmployees(@RequestParam("file") MultipartFile file){
+        fileToEntityService.bulkUploadFaculties(file);
+        return ResponseEntity.ok().build();
+    }
 }
