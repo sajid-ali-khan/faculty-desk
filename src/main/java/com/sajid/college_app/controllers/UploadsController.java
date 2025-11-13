@@ -18,8 +18,15 @@ public class UploadsController {
 
     @SneakyThrows
     @PostMapping("/students")
-    public ResponseEntity<?> bulkUploadBranches(@RequestParam("file") MultipartFile file){
+    public ResponseEntity<?> bulkUploadStudents(@RequestParam("file") MultipartFile file){
         fileToEntityService.bulkUploadStudents(file);
+        return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/courses")
+    public ResponseEntity<?> bulkUploadCourses(@RequestParam("file") MultipartFile file){
+        fileToEntityService.bulkUploadCourses(file);
         return ResponseEntity.ok().build();
     }
 }
