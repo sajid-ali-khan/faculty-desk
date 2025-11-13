@@ -4,6 +4,7 @@ import com.sajid.college_app.models.Scheme;
 import com.sajid.college_app.models.SimpleBranch;
 import com.sajid.college_app.repositories.SchemeRepository;
 import com.sajid.college_app.repositories.SimpleBranchRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,19 +14,15 @@ import java.util.*;
 
 @Configuration
 @Slf4j
+@AllArgsConstructor
 public class BranchAndSchemeSeeder implements ApplicationRunner {
     private final SimpleBranchRepository simpleBranchRepository;
     private final SchemeRepository schemeRepository;
 
-    public BranchAndSchemeSeeder(SimpleBranchRepository simpleBranchRepository, SchemeRepository schemeRepository) {
-        this.simpleBranchRepository = simpleBranchRepository;
-        this.schemeRepository = schemeRepository;
-    }
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (args.getOptionValues("seed-schemes-branches") == null){
-            log.info("Branch seeder skipped.");
+            log.info("Branch and Scheme seeder skipped.");
             return;
         }
         if (seedSchemes()){

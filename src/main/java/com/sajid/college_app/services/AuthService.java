@@ -5,6 +5,7 @@ import com.sajid.college_app.dtos.JwtResponse;
 import com.sajid.college_app.dtos.LoginRequest;
 import com.sajid.college_app.jwt.JwtUtils;
 import com.sajid.college_app.models.Faculty;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,16 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
 
     JwtUtils jwtUtils;
-
     AuthenticationManager authenticationManager;
-
-    public AuthService(JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
-        this.jwtUtils = jwtUtils;
-        this.authenticationManager = authenticationManager;
-    }
 
     public Optional<JwtResponse> loginUser(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(

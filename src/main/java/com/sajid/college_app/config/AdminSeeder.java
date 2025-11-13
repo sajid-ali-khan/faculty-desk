@@ -3,6 +3,7 @@ package com.sajid.college_app.config;
 import com.sajid.college_app.models.Faculty;
 import com.sajid.college_app.models.FacultyRole;
 import com.sajid.college_app.repositories.FacultyRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -11,14 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @Slf4j
+@AllArgsConstructor
 public class AdminSeeder implements ApplicationRunner {
-    FacultyRepository facultyRepository;
-    BCryptPasswordEncoder passwordEncoder;
-
-    public AdminSeeder(FacultyRepository facultyRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.facultyRepository = facultyRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final FacultyRepository facultyRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public void run(ApplicationArguments args) {

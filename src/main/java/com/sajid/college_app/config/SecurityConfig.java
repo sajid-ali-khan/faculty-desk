@@ -2,6 +2,7 @@ package com.sajid.college_app.config;
 
 import com.sajid.college_app.jwt.AuthTokenFilter;
 import com.sajid.college_app.services.FacultyDetailsService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,15 +23,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@AllArgsConstructor
 public class SecurityConfig {
 
     private final FacultyDetailsService facultyDetailsService;
     private final AuthTokenFilter authTokenFilter;
-
-    public SecurityConfig(FacultyDetailsService facultyDetailsService, AuthTokenFilter authTokenFilter) {
-        this.facultyDetailsService = facultyDetailsService;
-        this.authTokenFilter = authTokenFilter;
-    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
