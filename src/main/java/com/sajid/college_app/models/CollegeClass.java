@@ -8,9 +8,9 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "classes",
+@Table(name = "college_classes",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"branch_id", "semester", "section"})})
-public class Class {
+public class CollegeClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -25,9 +25,9 @@ public class Class {
     @Column(nullable = false)
     private String section;
 
-    @OneToMany(mappedBy = "_class", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "collegeClass", cascade = CascadeType.REMOVE)
     List<ClassSubject> classSubjects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "_class")
+    @OneToMany(mappedBy = "collegeClass")
     List<Student> students;
 }

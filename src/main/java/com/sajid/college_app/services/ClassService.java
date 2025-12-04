@@ -1,7 +1,7 @@
 package com.sajid.college_app.services;
 
 import com.sajid.college_app.models.Branch;
-import com.sajid.college_app.models.Class;
+import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.raw.RawStudent;
 import com.sajid.college_app.repositories.ClassRepository;
 import com.sajid.college_app.services.keys.BranchKey;
@@ -21,8 +21,8 @@ public class ClassService {
     private final ClassRepository classRepository;
 
     @Transactional
-    public Map<ClassKey, Class> bulkSaveClasses(List<RawStudent> rawStudents, Map<BranchKey, Branch> branchMap) {
-        Map<ClassKey, Class> classMap = classRepository.findAll().stream().collect(Collectors.toMap(
+    public Map<ClassKey, CollegeClass> bulkSaveClasses(List<RawStudent> rawStudents, Map<BranchKey, Branch> branchMap) {
+        Map<ClassKey, CollegeClass> classMap = classRepository.findAll().stream().collect(Collectors.toMap(
                 c -> new ClassKey(
                         new BranchKey(
                                 c.getBranch().getScheme().getSchemeCode(),
@@ -33,7 +33,7 @@ public class ClassService {
                 Function.identity()
         ));
 
-        List<Class> newClasses = rawStudents.stream()
+        List<CollegeClass> newCollegeClasses = rawStudents.stream()
                 .map(rs -> new ClassKey(
                         new BranchKey(
                                 rs.getScheme(),
@@ -45,16 +45,16 @@ public class ClassService {
                 .distinct()
                 .filter(key -> !classMap.containsKey(key) && branchMap.containsKey(key.branchKey()))
                 .map(key -> {
-                    Class _class = new Class();
-                    _class.setBranch(branchMap.get(key.branchKey()));
-                    _class.setSemester(key.semester());
-                    _class.setSection(key.section());
-                    classMap.put(key, _class);
-                    return _class;
+                    CollegeClass collegeClass = new CollegeClass();
+                    collegeClass.setBranch(branchMap.get(key.branchKey()));
+                    collegeClass.setSemester(key.semester());
+                    collegeClass.setSection(key.section());
+                    classMap.put(key, collegeClass);
+                    return collegeClass;
                 })
                 .toList();
 
-        classRepository.saveAll(newClasses);
+        classRepository.saveAll(newCollegeClasses);
         return classMap;
     }
 }

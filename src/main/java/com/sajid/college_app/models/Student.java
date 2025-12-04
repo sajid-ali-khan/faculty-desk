@@ -17,5 +17,5 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    private Class _class;
+    private CollegeClass collegeClass;
 }

@@ -1,6 +1,8 @@
 package com.sajid.college_app.services;
 
-import com.sajid.college_app.models.Class;
+import com.sajid.college_app.dtos.StudentResponse;
+import com.sajid.college_app.helpers.StudentMapper;
+import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.Student;
 import com.sajid.college_app.models.raw.RawStudent;
 import com.sajid.college_app.repositories.StudentRepository;
@@ -19,7 +21,9 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final StudentRepository studentRepository;
 
-    public void bulkSaveStudents(List<RawStudent> rawStudents, Map<ClassKey, Class> classMap){
+    private final StudentMapper studentMapper;
+
+    public void bulkSaveStudents(List<RawStudent> rawStudents, Map<ClassKey, CollegeClass> classMap){
         Map<String, Student> studentMap = studentRepository.findAll().stream()
                 .collect(Collectors.toMap(Student::getRollNumber, Function.identity()));
 
@@ -36,12 +40,20 @@ public class StudentService {
                             rs.getSection()
                     );
 
-                    student.set_class(classMap.get(ckey));
+                    student.setCollegeClass(classMap.get(ckey));
 
                     return student;
                 })
                 .toList();
 
         studentRepository.saveAll(newStudents);
+    }
+
+    public List<Student> getStudentsByRollNumberLike(String rollNumber){
+        return studentRepository.findByRollNumberContaining(rollNumber);
+    }
+
+    public List<StudentResponse> getAllStudents(){
+        return studentRepository.findAll().stream().map(studentMapper::mapStudentToStudentResponse).toList();
     }
 }

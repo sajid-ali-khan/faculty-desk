@@ -1,7 +1,7 @@
 package com.sajid.college_app.services;
 
 import com.sajid.college_app.models.Branch;
-import com.sajid.college_app.models.Class;
+import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.ClassSubject;
 import com.sajid.college_app.models.Subject;
 import com.sajid.college_app.models.raw.Course;
@@ -35,9 +35,9 @@ public class ClassSubjectService {
 
         Set<ClassSubjectKey> classSubjectMap = classSubjectRepository.findAll().stream()
                 .map(cs -> new ClassSubjectKey(
-                        new BranchKey(cs.get_class().getBranch().getScheme().getSchemeCode(),
-                                cs.get_class().getBranch().getSimpleBranch().getBranchCode()),
-                        cs.get_class().getSemester(),
+                        new BranchKey(cs.getCollegeClass().getBranch().getScheme().getSchemeCode(),
+                                cs.getCollegeClass().getBranch().getSimpleBranch().getBranchCode()),
+                        cs.getCollegeClass().getSemester(),
                         new SubjectKey(cs.getSubject().getShortForm(), cs.getSubject().getFullForm())
                 ))
                 .collect(Collectors.toSet());
@@ -59,13 +59,13 @@ public class ClassSubjectService {
                 .filter(key -> branchMap.containsKey(key.branchKey()) && subjectMap.containsKey(key.subjectKey()))
                 .flatMap(key -> {
                     Branch branch = branchMap.get(key.branchKey());
-                    List<Class> classes = classRepository.findByBranchAndSemester(branch, key.semester());
+                    List<CollegeClass> collegeClasses = classRepository.findByBranchAndSemester(branch, key.semester());
                     Subject subject = subjectMap.get(key.subjectKey());
 
-                    return classes.stream()
+                    return collegeClasses.stream()
                             .map(c -> {
                                 ClassSubject classSubject = new ClassSubject();
-                                classSubject.set_class(c);
+                                classSubject.setCollegeClass(c);
                                 classSubject.setSubject(subject);
                                 return classSubject;
                             });

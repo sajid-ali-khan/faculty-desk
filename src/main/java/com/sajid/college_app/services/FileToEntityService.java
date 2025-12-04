@@ -1,7 +1,7 @@
 package com.sajid.college_app.services;
 
 import com.opencsv.exceptions.CsvValidationException;
-import com.sajid.college_app.models.Class;
+import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.Subject;
 import com.sajid.college_app.models.raw.Course;
 import com.sajid.college_app.models.raw.Employee;
@@ -33,7 +33,7 @@ public class FileToEntityService {
     public void bulkUploadStudents(MultipartFile file) throws CsvValidationException {
         List<RawStudent> rawStudents = csvProcessingService.process(file, RawStudent.class);
         Map<BranchKey, Branch> branchMap = branchService.bulkSaveBranches(rawStudents);
-        Map<ClassKey, Class> classMap = classService.bulkSaveClasses(rawStudents, branchMap);
+        Map<ClassKey, CollegeClass> classMap = classService.bulkSaveClasses(rawStudents, branchMap);
         studentService.bulkSaveStudents(rawStudents, classMap);
     }
 

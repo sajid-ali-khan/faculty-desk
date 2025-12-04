@@ -10,8 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "class_subjects",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"class_id", "subject_id", "faculty_id"}),
-        @UniqueConstraint(columnNames = {"class_id", "subject_id"}),
+        @UniqueConstraint(columnNames = {"college_class_id", "subject_id", "faculty_id"}),
+        @UniqueConstraint(columnNames = {"college_class_id", "subject_id"}),
         })
 public class ClassSubject {
     @Id
@@ -19,8 +19,8 @@ public class ClassSubject {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false, name = "class_id")
-    private Class _class;
+    @JoinColumn(nullable = false, name = "college_class_id")
+    private CollegeClass collegeClass;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
