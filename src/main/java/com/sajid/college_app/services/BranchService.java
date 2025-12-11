@@ -1,5 +1,7 @@
 package com.sajid.college_app.services;
 
+import com.sajid.college_app.dtos.BranchResponse;
+import com.sajid.college_app.exceptions.ResourceNotFoundException;
 import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.models.Branch;
 import com.sajid.college_app.models.Scheme;
@@ -52,5 +54,19 @@ public class BranchService {
 
         branchRepository.saveAll(newBranches);
         return branchMap;
+    }
+
+    public List<BranchResponse> getBranchesByScheme(String schemeCode){
+        Scheme scheme = schemeRepository.findBySchemeCode(schemeCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Scheme not found with code: " + schemeCode));
+        return branchRepository.findByScheme(scheme).stream()
+                .map(b -> new BranchResponse(
+                        b.getId(),
+                        b.getSimpleBranch().getShortForm(),
+                        b.getSimpleBranch().getFullForm(),
+                        b.getSimpleBranch().getBranchCode(),
+                        b.getScheme().getSchemeCode()
+                ))
+                .toList();
     }
 }

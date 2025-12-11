@@ -9,6 +9,7 @@ import com.sajid.college_app.repositories.StudentRepository;
 import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.services.keys.ClassKey;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,11 +50,12 @@ public class StudentService {
         studentRepository.saveAll(newStudents);
     }
 
-    public List<Student> getStudentsByRollNumberLike(String rollNumber){
-        return studentRepository.findByRollNumberContaining(rollNumber);
+
+    public List<StudentResponse> getAllStudents(Pageable pageable){
+        return studentRepository.findAll(pageable).getContent().stream().map(studentMapper::mapStudentToStudentResponse).toList();
     }
 
-    public List<StudentResponse> getAllStudents(){
-        return studentRepository.findAll().stream().map(studentMapper::mapStudentToStudentResponse).toList();
+    public List<StudentResponse> searchStudentsByName(String name, Pageable pageable){
+        return studentRepository.findByNamePattern(name, pageable).getContent().stream().map(studentMapper::mapStudentToStudentResponse).toList();
     }
 }

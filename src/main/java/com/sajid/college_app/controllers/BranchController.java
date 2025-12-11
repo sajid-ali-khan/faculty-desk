@@ -5,18 +5,23 @@ import com.sajid.college_app.services.FileToEntityService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/branches")
+@RequestMapping("/api/branch")
 @AllArgsConstructor
 public class BranchController {
     private final BranchService branchService;
     private final FileToEntityService fileToEntityService;
 
+    @GetMapping("/scheme/{schemeCode}")
+    public ResponseEntity<?> getBranchesByScheme(@PathVariable String schemeCode) {
+        return ResponseEntity.ok(branchService.getBranchesByScheme(schemeCode));
+    }
 
+//    @GetMapping("/{branchId}/semester/{semester}/subjects")
+//    public ResponseEntity<?> getSubjectsByBranchAndSemester(@PathVariable int branchId, @PathVariable int semester) {
+//        return ResponseEntity.ok(branchService.getSubjectsByBranchAndSemester(branchId, semester));
+//    }
 }
