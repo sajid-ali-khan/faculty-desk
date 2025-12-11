@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ClassRepository extends JpaRepository<CollegeClass, Integer> {
     List<CollegeClass> findByBranchAndSemester(Branch branch, int semester);
+
 }

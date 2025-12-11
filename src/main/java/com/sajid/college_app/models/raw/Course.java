@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 
-
 public class Course {
     @CsvBindByName(column = "degr", required = true)
     private String degree;

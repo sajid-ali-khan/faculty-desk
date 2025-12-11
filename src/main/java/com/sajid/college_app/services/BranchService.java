@@ -2,6 +2,7 @@ package com.sajid.college_app.services;
 
 import com.sajid.college_app.dtos.BranchResponse;
 import com.sajid.college_app.exceptions.ResourceNotFoundException;
+import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.models.Branch;
 import com.sajid.college_app.models.Scheme;
@@ -19,12 +20,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @AllArgsConstructor
 public class BranchService {
     private final BranchRepository branchRepository;
     private final SchemeRepository schemeRepository;
     private final SimpleBranchRepository simpleBranchRepository;
+    private final AutoMapper autoMapper;
 
     @Transactional
     public Map<BranchKey, Branch> bulkSaveBranches(List<RawStudent> rawStudents){
@@ -60,13 +64,7 @@ public class BranchService {
         Scheme scheme = schemeRepository.findBySchemeCode(schemeCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Scheme not found with code: " + schemeCode));
         return branchRepository.findByScheme(scheme).stream()
-                .map(b -> new BranchResponse(
-                        b.getId(),
-                        b.getSimpleBranch().getShortForm(),
-                        b.getSimpleBranch().getFullForm(),
-                        b.getSimpleBranch().getBranchCode(),
-                        b.getScheme().getSchemeCode()
-                ))
+                .map(autoMapper::mapBranchToBranchResponse)
                 .toList();
     }
 }

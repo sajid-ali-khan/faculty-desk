@@ -1,5 +1,7 @@
 package com.sajid.college_app.services;
 
+import com.sajid.college_app.dtos.SubjectResponse;
+import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.Subject;
 import com.sajid.college_app.models.SubjectType;
 import com.sajid.college_app.models.raw.Course;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SubjectService {
     private final SubjectRepository subjectRepository;
+    private final AutoMapper autoMapper;
 
     public Map<SubjectKey, Subject> bulkSaveSubjects(List<Course> rawCourses){
         Map<SubjectKey, Subject> subjectMap = subjectRepository.findAll().stream()
@@ -41,5 +44,12 @@ public class SubjectService {
 
         subjectRepository.saveAll(newSubjects);
         return subjectMap;
+    }
+
+    public List<SubjectResponse> getSubjectsByBranchAndSemester(int branchId, int semester) {
+        List<Subject> subjects = subjectRepository.findByBranchIdAndSemester(branchId, semester);
+        return subjects.stream()
+                .map(autoMapper::mapSubjectToSubjectResponse)
+                .toList();
     }
 }

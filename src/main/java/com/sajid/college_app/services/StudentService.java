@@ -1,7 +1,7 @@
 package com.sajid.college_app.services;
 
 import com.sajid.college_app.dtos.StudentResponse;
-import com.sajid.college_app.helpers.StudentMapper;
+import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.Student;
 import com.sajid.college_app.models.raw.RawStudent;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final StudentRepository studentRepository;
 
-    private final StudentMapper studentMapper;
+    private final AutoMapper autoMapper;
 
     public void bulkSaveStudents(List<RawStudent> rawStudents, Map<ClassKey, CollegeClass> classMap){
         Map<String, Student> studentMap = studentRepository.findAll().stream()
@@ -52,10 +52,10 @@ public class StudentService {
 
 
     public List<StudentResponse> getAllStudents(Pageable pageable){
-        return studentRepository.findAll(pageable).getContent().stream().map(studentMapper::mapStudentToStudentResponse).toList();
+        return studentRepository.findAll(pageable).getContent().stream().map(autoMapper::mapStudentToStudentResponse).toList();
     }
 
     public List<StudentResponse> searchStudentsByName(String name, Pageable pageable){
-        return studentRepository.findByNamePattern(name, pageable).getContent().stream().map(studentMapper::mapStudentToStudentResponse).toList();
+        return studentRepository.findByNamePattern(name, pageable).getContent().stream().map(autoMapper::mapStudentToStudentResponse).toList();
     }
 }
