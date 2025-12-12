@@ -1,11 +1,7 @@
 package com.sajid.college_app.helpers;
 
-import com.sajid.college_app.dtos.BranchResponse;
-import com.sajid.college_app.dtos.StudentResponse;
-import com.sajid.college_app.dtos.SubjectResponse;
-import com.sajid.college_app.models.Branch;
-import com.sajid.college_app.models.Student;
-import com.sajid.college_app.models.Subject;
+import com.sajid.college_app.dtos.*;
+import com.sajid.college_app.models.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -24,4 +20,21 @@ public interface AutoMapper {
     @Mapping(target = "abbreviation", source = "fullForm")
     @Mapping(target = "subjectType", source = "subjectType")
     SubjectResponse mapSubjectToSubjectResponse(Subject subject);
+
+    @Mapping(target = "branchName", source = "shortForm")
+    @Mapping(target = "abbreviation", source = "fullForm")
+    SimpleBranchResponse mapSimpleBranchToSimpleBranchResponse(SimpleBranch simpleBranch);
+
+    @Mapping(target = "branchName", source = "branch.simpleBranch.shortForm")
+    @Mapping(target = "branchAbbreviation", source = "branch.simpleBranch.fullForm")
+    @Mapping(target = "subjectAssignments", source = "classSubjects")
+    ClassAssignmentResponse mapClassToClassSubjectResponse(CollegeClass collegeClass);
+
+    @Mapping(target = "subjectName", source = "classSubject.subject.shortForm")
+    @Mapping(target = "subjectAbbreviation", source = "classSubject.subject.fullForm")
+    @Mapping(target = "subjectType", source = "classSubject.subject.subjectType")
+    @Mapping(target = "facultyId", source = "faculty.id")
+    @Mapping(target = "facultyName", source = "faculty.name")
+    @Mapping(target = "facultyCode", source = "faculty.facultyCode")
+    SubjectAssignment mapClassSubjectToSubjectAssignment(ClassSubject classSubject, Faculty faculty);
 }

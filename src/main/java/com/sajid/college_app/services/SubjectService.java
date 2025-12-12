@@ -45,11 +45,4 @@ public class SubjectService {
         subjectRepository.saveAll(newSubjects);
         return subjectMap;
     }
-
-    public List<SubjectResponse> getSubjectsByBranchAndSemester(int branchId, int semester) {
-        List<Subject> subjects = subjectRepository.findByBranchIdAndSemester(branchId, semester);
-        return subjects.stream()
-                .map(autoMapper::mapSubjectToSubjectResponse)
-                .toList();
-    }
 }

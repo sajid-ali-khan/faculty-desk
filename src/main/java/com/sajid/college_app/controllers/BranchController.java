@@ -10,24 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/branch")
+@RequestMapping("/api/branches")
 @AllArgsConstructor
 public class BranchController {
     private final BranchService branchService;
-    private final FileToEntityService fileToEntityService;
     private final SubjectService subjectService;
 
-    @GetMapping("/scheme/{schemeCode}")
-    public ResponseEntity<?> getBranchesByScheme(@PathVariable String schemeCode) {
-        return ResponseEntity.ok(branchService.getBranchesByScheme(schemeCode));
+    @GetMapping
+    public ResponseEntity<?> getDistinctBranches() {
+        return ResponseEntity.ok(branchService.getDistinctBranches());
+    }
+    @GetMapping("/branchCode/{branchCode}/semesters")
+    public ResponseEntity<?> getDistinctSemestersByBranchCode(@PathVariable int branchCode) {
+        return ResponseEntity.ok(branchService.getDistinctSemestersByBranchCode(branchCode));
     }
 
-    @GetMapping("/{branchId}/semester/{semester}/subjects")
-    public ResponseEntity<?> getSubjectsByBranchAndSemester(@PathVariable int branchId, @PathVariable int semester) {
-        return ResponseEntity.ok(subjectService.getSubjectsByBranchAndSemester(branchId, semester));
+    @GetMapping("/branchCode/{branchCode}/semesters/{semester}/sections")
+    public ResponseEntity<?> getDistinctSectionsByBranchCodeAndSemester(@PathVariable int branchCode, @PathVariable int semester) {
+        return ResponseEntity.ok(branchService.getDistinctSectionsByBranchCodeAndSemester(branchCode, semester));
     }
-
-//    create a get method for fetching distinct branches
-//    create a get method for fetching distinct semesters by branch code
-//    create a get method for fetching distinct sections by branch code and semester
 }
