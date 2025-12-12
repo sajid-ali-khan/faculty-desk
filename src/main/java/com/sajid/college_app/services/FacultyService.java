@@ -51,4 +51,12 @@ public class FacultyService {
             log.info("Successfully saved {} new faculties", newFaculties.size());
         }
     }
+
+//    public void searchFaculty(String name) {
+//        List<Faculty> faculties = facultyRepository.findByNameContainingIgnoreCase(name);
+//        log.info("Found {} faculties matching '{}'", faculties.size(), name);
+//        for (Faculty faculty : faculties) {
+//            log.info("Faculty Code: {}, Name: {}", faculty.getFacultyCode(), faculty.getName());
+//        }
+//    }
 }

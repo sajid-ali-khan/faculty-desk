@@ -1,6 +1,8 @@
 package com.sajid.college_app.controllers;
 
+import com.sajid.college_app.repositories.ClassRepository;
 import com.sajid.college_app.services.BranchService;
+import com.sajid.college_app.services.ClassService;
 import com.sajid.college_app.services.FileToEntityService;
 import com.sajid.college_app.services.SubjectService;
 import lombok.AllArgsConstructor;

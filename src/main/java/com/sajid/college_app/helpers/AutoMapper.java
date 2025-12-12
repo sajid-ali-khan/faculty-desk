@@ -28,13 +28,14 @@ public interface AutoMapper {
     @Mapping(target = "branchName", source = "branch.simpleBranch.shortForm")
     @Mapping(target = "branchAbbreviation", source = "branch.simpleBranch.fullForm")
     @Mapping(target = "subjectAssignments", source = "classSubjects")
-    ClassAssignmentResponse mapClassToClassSubjectResponse(CollegeClass collegeClass);
+    ClassAssignmentResponse mapClassToClassAssignmentResponse(CollegeClass collegeClass);
 
-    @Mapping(target = "subjectName", source = "classSubject.subject.shortForm")
-    @Mapping(target = "subjectAbbreviation", source = "classSubject.subject.fullForm")
-    @Mapping(target = "subjectType", source = "classSubject.subject.subjectType")
+    @Mapping(target = "subjectId", source = "subject.id")
+    @Mapping(target = "subjectAbbreviation", source = "subject.shortForm")
+    @Mapping(target = "subjectName", source = "subject.fullForm")
+    @Mapping(target = "subjectType", source = "subject.subjectType")
     @Mapping(target = "facultyId", source = "faculty.id")
     @Mapping(target = "facultyName", source = "faculty.name")
     @Mapping(target = "facultyCode", source = "faculty.facultyCode")
-    SubjectAssignment mapClassSubjectToSubjectAssignment(ClassSubject classSubject, Faculty faculty);
+    SubjectAssignment mapClassSubjectToSubjectAssignment(ClassSubject classSubject);
 }

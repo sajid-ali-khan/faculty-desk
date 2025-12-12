@@ -1,5 +1,8 @@
 package com.sajid.college_app.services;
 
+import com.sajid.college_app.dtos.ClassAssignmentResponse;
+import com.sajid.college_app.exceptions.ResourceNotFoundException;
+import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.Branch;
 import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.raw.RawStudent;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ClassService {
     private final ClassRepository classRepository;
+    private final AutoMapper autoMapper;
 
     @Transactional
     public Map<ClassKey, CollegeClass> bulkSaveClasses(List<RawStudent> rawStudents, Map<BranchKey, Branch> branchMap) {
@@ -56,5 +60,13 @@ public class ClassService {
 
         classRepository.saveAll(newCollegeClasses);
         return classMap;
+    }
+
+
+    public ClassAssignmentResponse getAssignmentsByClassId(int classId) {
+        CollegeClass collegeClass = classRepository.findById(classId)
+                .orElseThrow(() -> new ResourceNotFoundException("Class with id " + classId + " not found"));
+
+        return autoMapper.mapClassToClassAssignmentResponse(collegeClass);
     }
 }
