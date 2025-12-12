@@ -29,7 +29,7 @@ public class JwtUtils {
 
         log.debug("Authorization header: " + bearerToken);
         if (bearerToken == null || !bearerToken.startsWith("Bearer")) return null;
-        return bearerToken.substring(7);
+        return bearerToken.split(" ")[1].trim();
     }
 
     public String generateTokenFromUsername(UserDetails userDetails){

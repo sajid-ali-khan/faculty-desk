@@ -1,24 +1,43 @@
 package com.sajid.college_app.controllers;
 
+import com.sajid.college_app.dtos.FacultyResponse;
+import com.sajid.college_app.models.Faculty;
+import com.sajid.college_app.services.FacultyService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/faculties")
 @AllArgsConstructor
 public class FacultyController {
+    private final FacultyService facultyService;
 
     @GetMapping("/search")
     public ResponseEntity<?> searchFaculties(
             @RequestParam String query,
-            @RequestParam int page,
-            @RequestParam int size
+            @RequestParam String searchBy,
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size
     ) {
-        // Implement search logic here
-        return ResponseEntity.ok().body("Search faculties endpoint");
+        List<FacultyResponse> faculties = null;
+        if (searchBy.equalsIgnoreCase("name")) {
+            faculties = facultyService.searchFacultyByName(query, PageRequest.of(page, size));
+        } else if (searchBy.equalsIgnoreCase("code")) {
+            faculties = facultyService.searchFacultyByCode(query, PageRequest.of(page, size));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Invalid searchBy parameter. Use 'name' or 'code'."
+            ));
+        }
+        return ResponseEntity.ok(faculties);
     }
 }

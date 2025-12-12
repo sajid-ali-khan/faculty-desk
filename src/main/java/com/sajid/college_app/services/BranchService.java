@@ -1,9 +1,7 @@
 package com.sajid.college_app.services;
 
-import com.sajid.college_app.dtos.BranchResponse;
 import com.sajid.college_app.dtos.ClassIdAndSection;
 import com.sajid.college_app.dtos.SimpleBranchResponse;
-import com.sajid.college_app.exceptions.ResourceNotFoundException;
 import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.repositories.ClassRepository;
 import com.sajid.college_app.services.keys.BranchKey;

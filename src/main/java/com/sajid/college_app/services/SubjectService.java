@@ -1,6 +1,5 @@
 package com.sajid.college_app.services;
 
-import com.sajid.college_app.dtos.SubjectResponse;
 import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.Subject;
 import com.sajid.college_app.models.SubjectType;

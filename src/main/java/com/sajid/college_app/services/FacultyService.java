@@ -1,11 +1,14 @@
 package com.sajid.college_app.services;
 
+import com.sajid.college_app.dtos.FacultyResponse;
+import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.Faculty;
 import com.sajid.college_app.models.raw.Employee;
 import com.sajid.college_app.repositories.FacultyRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 public class FacultyService {
     private final FacultyRepository facultyRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final AutoMapper autoMapper;
 
     @Transactional
     public void bulkSaveFaculty(List<Employee> rawEmployees){
@@ -52,11 +56,19 @@ public class FacultyService {
         }
     }
 
-//    public void searchFaculty(String name) {
-//        List<Faculty> faculties = facultyRepository.findByNameContainingIgnoreCase(name);
-//        log.info("Found {} faculties matching '{}'", faculties.size(), name);
-//        for (Faculty faculty : faculties) {
-//            log.info("Faculty Code: {}, Name: {}", faculty.getFacultyCode(), faculty.getName());
-//        }
-//    }
+    public List<FacultyResponse> searchFacultyByName(String name, PageRequest pageRequest) {
+        List<Faculty> faculties = facultyRepository.findByNameContainingIgnoreCase(name, pageRequest).getContent();
+        log.info("Found {} faculties matching name '{}'", faculties.size(), name);
+        return faculties.stream()
+                .map(autoMapper::mapFacultyToFacultyResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<FacultyResponse> searchFacultyByCode(String code, PageRequest pageRequest) {
+        List<Faculty> faculties = facultyRepository.findByFacultyCodeContainingIgnoreCase(code, pageRequest).getContent();
+        log.info("Found {} faculties matching code '{}'", faculties.size(), code);
+        return faculties.stream()
+                .map(autoMapper::mapFacultyToFacultyResponse)
+                .collect(Collectors.toList());
+    }
 }
