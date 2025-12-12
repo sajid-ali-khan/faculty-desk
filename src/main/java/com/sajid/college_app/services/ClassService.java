@@ -1,18 +1,23 @@
 package com.sajid.college_app.services;
 
 import com.sajid.college_app.dtos.ClassAssignmentResponse;
+import com.sajid.college_app.dtos.UpdateClassAssignmentsRequest;
 import com.sajid.college_app.exceptions.ResourceNotFoundException;
 import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.Branch;
+import com.sajid.college_app.models.ClassSubject;
 import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.raw.RawStudent;
 import com.sajid.college_app.repositories.ClassRepository;
+import com.sajid.college_app.repositories.ClassSubjectRepository;
+import com.sajid.college_app.repositories.FacultyRepository;
 import com.sajid.college_app.services.keys.BranchKey;
 import com.sajid.college_app.services.keys.ClassKey;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,6 +28,8 @@ import java.util.stream.Collectors;
 public class ClassService {
     private final ClassRepository classRepository;
     private final AutoMapper autoMapper;
+    private final FacultyRepository facultyRepository;
+    private final ClassSubjectRepository classSubjectRepository;
 
     @Transactional
     public Map<ClassKey, CollegeClass> bulkSaveClasses(List<RawStudent> rawStudents, Map<BranchKey, Branch> branchMap) {
@@ -68,5 +75,31 @@ public class ClassService {
                 .orElseThrow(() -> new ResourceNotFoundException("Class with id " + classId + " not found"));
 
         return autoMapper.mapClassToClassAssignmentResponse(collegeClass);
+    }
+
+
+    @Transactional
+    public void updateAssignmentsByClassId(Integer classId, List<UpdateClassAssignmentsRequest> request) {
+        List<ClassSubject> classSubjects = classRepository.findById(classId)
+                .orElseThrow(() -> new ResourceNotFoundException("Class with id " + classId + " not found"))
+                .getClassSubjects();
+
+        Map<Long, ClassSubject> classSubjectMap = classSubjects.stream()
+                .collect(Collectors.toMap(ClassSubject::getId, Function.identity()));
+
+        List<ClassSubject> updatedClassSubjects =  new ArrayList<>();
+        for (UpdateClassAssignmentsRequest req : request) {
+            if (classSubjectMap.containsKey(req.classSubjectId())) {
+                ClassSubject classSubject = classSubjectMap.get(req.classSubjectId());
+                classSubject.setFaculty(facultyRepository.findById(req.facultyId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Faculty with id " + req.facultyId() + " not found")));
+
+                updatedClassSubjects.add(classSubject);
+            } else {
+                throw new ResourceNotFoundException("ClassSubject with id " + req.classSubjectId() + " not found in class " + classId);
+            }
+        }
+
+        classSubjectRepository.saveAll(updatedClassSubjects);
     }
 }
