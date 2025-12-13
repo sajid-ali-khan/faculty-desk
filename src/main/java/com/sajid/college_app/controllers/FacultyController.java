@@ -39,6 +39,15 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
+    @GetMapping("/{facultyId}")
+    public ResponseEntity<?> getById(
+            @PathVariable("facultyId") int facultyId
+    ) {
+        log.debug("GetFacultyById: facultyId = {}", facultyId);
+        FacultyResponse faculty = facultyService.getFacultyById(facultyId);
+        return ResponseEntity.ok(faculty);
+    }
+
 
     @GetMapping("/{facultyId}/assignments")
     public ResponseEntity<?> getFacultyAssignments(@PathVariable("facultyId") int facultyId){

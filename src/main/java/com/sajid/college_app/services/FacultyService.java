@@ -84,4 +84,10 @@ public class FacultyService {
                 .map(autoMapper::mapClassSubjectToFacultyAssignmentResponse)
                 .toList();
     }
+
+    public FacultyResponse getFacultyById(int facultyId) {
+        Faculty faculty = facultyRepository.findById(facultyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty with Id " + facultyId + " not found."));
+        return autoMapper.mapFacultyToFacultyResponse(faculty);
+    }
 }
