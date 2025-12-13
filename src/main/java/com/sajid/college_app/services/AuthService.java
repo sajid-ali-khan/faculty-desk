@@ -20,6 +20,7 @@ public class AuthService {
 
     JwtUtils jwtUtils;
     AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     public Optional<JwtResponse> loginUser(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
@@ -32,6 +33,7 @@ public class AuthService {
 
         return Optional.of(new JwtResponse(
                 jwt,
+                refreshTokenService.createRefreshToken(userDetails.getId()).getToken(),
                 "Bearer",
                 userDetails.getUsername(),
                 userDetails.getId(),

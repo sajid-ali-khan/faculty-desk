@@ -13,6 +13,7 @@ import com.sajid.college_app.repositories.ClassSubjectRepository;
 import com.sajid.college_app.repositories.SessionRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class SessionService {
     private final SessionRepository sessionRepository;
     private final ClassSubjectRepository classSubjectRepository;
@@ -52,6 +54,7 @@ public class SessionService {
         session = sessionRepository.save(session);
 //        fetch all students of that class
         List<Student> students = classSubject.getCollegeClass().getStudents();
+        session.setTotalCount(students.size());
 //        create attendance records using standard for loop
 
         for (Student student : students) {
@@ -77,12 +80,25 @@ public class SessionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Session with id = " + sessionId + " not found."));
 
         List<AttendanceRecord> attendanceRecords = session.getAttendanceRecords();
+        int presentCount = 0;
         for (int i = 0; i < attendanceRecords.size(); i++) {
+            if (!attendanceUpdates.containsKey(attendanceRecords.get(i).getId())) {
+                if (attendanceRecords.get(i).isPresent()){
+                    presentCount += 1;
+                }
+                continue;
+            }
             long attendanceRecordId = attendanceRecords.get(i).getId();
+            log.debug("Updating attendanceRecordId = {} to present = {}", attendanceRecordId, attendanceUpdates.get(attendanceRecordId));
             Boolean present = attendanceUpdates.get(attendanceRecordId);
             attendanceRecords.get(i).setPresent(present);
+            if (present){
+                presentCount++;
+            }
         }
         session.setAttendanceRecords(attendanceRecords);
+        session.setPresentCount(presentCount);
         sessionRepository.save(session);
+        attendanceRecordRepository.saveAll(attendanceRecords);
     }
 }

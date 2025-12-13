@@ -2,6 +2,7 @@ package com.sajid.college_app.controllers;
 
 import com.sajid.college_app.services.SessionService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/sessions")
 @AllArgsConstructor
+@Slf4j
 public class SessionController {
     private final SessionService sessionService;
 
@@ -45,6 +47,7 @@ public class SessionController {
             @PathVariable("sessionId") long sessionId,
             @RequestBody Map<Long, Boolean> attendanceUpdates
     ){
+        log.info("Updating session {} with attendance updates: {}", sessionId, attendanceUpdates);
         sessionService.updateSessionStatus(sessionId, attendanceUpdates);
         return ResponseEntity.noContent().build();
     }
