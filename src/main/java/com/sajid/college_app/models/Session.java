@@ -33,7 +33,7 @@ public class Session {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "session", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "session", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     List<AttendanceRecord> attendanceRecords = new ArrayList<>();
 
 

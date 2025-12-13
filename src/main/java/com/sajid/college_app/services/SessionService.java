@@ -19,6 +19,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -69,5 +70,19 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Session with id = " + sessionId + " not found."));
         sessionRepository.delete(session);
+    }
+
+    public void updateSessionStatus(long sessionId, Map<Long, Boolean> attendanceUpdates) {
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Session with id = " + sessionId + " not found."));
+
+        List<AttendanceRecord> attendanceRecords = session.getAttendanceRecords();
+        for (int i = 0; i < attendanceRecords.size(); i++) {
+            long attendanceRecordId = attendanceRecords.get(i).getId();
+            Boolean present = attendanceUpdates.get(attendanceRecordId);
+            attendanceRecords.get(i).setPresent(present);
+        }
+        session.setAttendanceRecords(attendanceRecords);
+        sessionRepository.save(session);
     }
 }

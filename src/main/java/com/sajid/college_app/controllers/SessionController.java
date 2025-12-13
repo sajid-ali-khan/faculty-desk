@@ -1,7 +1,5 @@
 package com.sajid.college_app.controllers;
 
-import com.sajid.college_app.dtos.DetailedSessionResponse;
-import com.sajid.college_app.dtos.SessionResponse;
 import com.sajid.college_app.services.SessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sessions")
@@ -34,11 +32,20 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(detailedSession);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{sessionId}")
     public ResponseEntity<?> deleteSession(
-            @RequestParam long sessionId
+            @PathVariable("sessionId") long sessionId
     ){
         sessionService.deleteSessionById(sessionId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{sessionId}")
+    public ResponseEntity<?> updateSessionStatus(
+            @PathVariable("sessionId") long sessionId,
+            @RequestBody Map<Long, Boolean> attendanceUpdates
+    ){
+        sessionService.updateSessionStatus(sessionId, attendanceUpdates);
         return ResponseEntity.noContent().build();
     }
 
