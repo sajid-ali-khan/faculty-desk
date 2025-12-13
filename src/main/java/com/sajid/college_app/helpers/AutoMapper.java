@@ -7,7 +7,12 @@ import org.mapstruct.Mapping;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @Mapper(componentModel = "spring")
@@ -47,10 +52,24 @@ public interface AutoMapper {
 
     SessionResponse mapSessionToSessionResponse(Session session);
 
-    default LocalDate instantToLocalDate(Instant instant) {
+    default LocalDateTime instantToLocalDate(Instant instant) {
         return instant == null
                 ? null
-                : instant.atZone(ZoneId.of("Asia/Kolkata")).toLocalDate();
+                : instant.atZone(ZoneId.of("Asia/Kolkata")).toLocalDateTime();
     }
 
+    @Mapping(target = "studentRoll", source = "student.rollNumber")
+    @Mapping(target = "studentName", source = "student.name")
+    AttendanceRecordResponse mapAttendanceRecordToAttendanceRecordResponse(AttendanceRecord attendanceRecord);
+
+    default Map<Long, AttendanceRecordResponse> mapAttendanceRecordListToMap(List<AttendanceRecord> attendanceRecords){
+        return attendanceRecords.stream()
+                .map(this::mapAttendanceRecordToAttendanceRecordResponse)
+                .collect(Collectors.toMap(
+                        AttendanceRecordResponse::id, Function.identity()
+                ));
+    }
+
+    @Mapping(target = "attendanceRecordMap", source = "attendanceRecords")
+    DetailedSessionResponse mapSessionToDetailedSessionResponse(Session session);
 }

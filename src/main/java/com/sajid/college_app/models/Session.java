@@ -39,7 +39,7 @@ public class Session {
 
     @PrePersist
     private void onCreate(){
-        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt =  Instant.now();
     }
 
     @PreUpdate
