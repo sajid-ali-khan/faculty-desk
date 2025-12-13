@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,5 +90,23 @@ public class FacultyService {
         Faculty faculty = facultyRepository.findById(facultyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty with Id " + facultyId + " not found."));
         return autoMapper.mapFacultyToFacultyResponse(faculty);
+    }
+
+    public Pair<Boolean, String> resetFacultyPassword(int facultyId, String newPassword, String oldPassword) {
+        Faculty faculty = facultyRepository.findById(facultyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty with Id " + facultyId + " not found."));
+        boolean changed = true;
+        String message;
+        if (oldPassword != null && !passwordEncoder.matches(oldPassword, faculty.getPasswordHash())) {
+            message = "Old password is incorrect. Password not changed.";
+            log.info("Old password is incorrect for facultyId = {}. Password not changed.", facultyId);
+            changed = false;
+        } else {
+            faculty.setPasswordHash(passwordEncoder.encode(newPassword));
+            facultyRepository.save(faculty);
+            log.info("Password reset successfully for facultyId = {}", facultyId);
+            message = "Password reset successfully.";
+        }
+        return Pair.of(changed, message);
     }
 }

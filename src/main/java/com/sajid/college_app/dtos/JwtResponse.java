@@ -12,4 +12,5 @@ public class JwtResponse {
     private String username;
     private int userId;
     private String role;
+    private boolean existingSessionFound;
 }

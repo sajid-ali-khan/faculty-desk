@@ -47,6 +47,7 @@ public class AuthController {
                         return ResponseEntity.badRequest().body("Refresh token expired. Please login again.");
                     }
                     String newJwt = jwtUtils.generateTokenFromUsername(token.getFaculty());
+                    log.info("Token refreshed for user: {}", token.getFaculty().getFacultyCode());
                     return ResponseEntity.ok(Map.of("token", newJwt));
                 })
                 .orElse(ResponseEntity.badRequest().body("Invalid refresh token."));

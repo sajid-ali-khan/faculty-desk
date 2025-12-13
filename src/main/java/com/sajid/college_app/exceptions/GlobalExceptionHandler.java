@@ -2,6 +2,7 @@ package com.sajid.college_app.exceptions;
 
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -32,6 +33,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(Map.of(
                 "success", false,
                 "message", e.getMessage()
+        ));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e){
+        return ResponseEntity.status(401).body(Map.of(
+                "success", false,
+                "message", "Invalid credentials provided."
         ));
     }
 }
