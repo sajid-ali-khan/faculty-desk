@@ -1,7 +1,10 @@
 package com.sajid.college_app.services;
 
+import com.sajid.college_app.dtos.FacultyAssignmentResponse;
 import com.sajid.college_app.dtos.FacultyResponse;
+import com.sajid.college_app.exceptions.ResourceNotFoundException;
 import com.sajid.college_app.helpers.AutoMapper;
+import com.sajid.college_app.models.ClassSubject;
 import com.sajid.college_app.models.Faculty;
 import com.sajid.college_app.models.raw.Employee;
 import com.sajid.college_app.repositories.FacultyRepository;
@@ -70,5 +73,15 @@ public class FacultyService {
         return faculties.stream()
                 .map(autoMapper::mapFacultyToFacultyResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<FacultyAssignmentResponse> getFacultyAssignments(int facultyId){
+        List<ClassSubject> assignedClassSubjects = facultyRepository.findById(facultyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty with Id " + facultyId + " not found."))
+                .getAssignedClassSubjects();
+
+        return assignedClassSubjects.stream()
+                .map(autoMapper::mapClassSubjectToFacultyAssignmentResponse)
+                .toList();
     }
 }

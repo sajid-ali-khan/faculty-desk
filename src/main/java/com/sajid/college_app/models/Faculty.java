@@ -54,4 +54,7 @@ public class Faculty implements UserDetails {
     public String getUsername() {
         return this.facultyCode;
     }
+
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.DETACH)
+    private List<ClassSubject> assignedClassSubjects = new ArrayList<>();
 }

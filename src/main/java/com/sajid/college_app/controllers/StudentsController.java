@@ -21,20 +21,20 @@ public class StudentsController {
     private final StudentService studentService;
 
     @GetMapping("/list")
-    public List<StudentResponse> getStudents(@RequestParam(required = false, defaultValue = "1") int pageNo,
+    public List<StudentResponse> getStudents(@RequestParam(required = false, defaultValue = "0") int pageNo,
                                              @RequestParam(required = false, defaultValue = "10") int pageSize,
                                              @RequestParam(required = false, defaultValue = "id") String sortBy,
                                              @RequestParam(required = false, defaultValue = "asc") String sortDir,
-                                             @RequestParam(required = false) String search) {
+                                             @RequestParam(required = false) String query) {
         Sort sort = null;
         if (sortDir.equalsIgnoreCase("asc")) {
             sort = Sort.by(sortBy).ascending();
         } else{
             sort = Sort.by(sortBy).descending();
         }
-        if (search == null){
-            return studentService.getAllStudents(PageRequest.of(pageNo - 1, pageSize, sort));
+        if (query == null){
+            return studentService.getAllStudents(PageRequest.of(pageNo, pageSize, sort));
         }
-        return studentService.searchStudentsByName(search, PageRequest.of(pageNo - 1, pageSize, sort));
+        return studentService.searchStudentsByName(query, PageRequest.of(pageNo, pageSize, sort));
     }
 }

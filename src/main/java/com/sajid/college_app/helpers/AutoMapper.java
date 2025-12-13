@@ -30,4 +30,12 @@ public interface AutoMapper {
 
     @Mapping(target = "facultyName", source = "name")
     FacultyResponse mapFacultyToFacultyResponse(Faculty faculty);
+
+    @Mapping(target = "branchName", source = "collegeClass.branch.simpleBranch.fullForm")
+    @Mapping(target = "branchAbbreviation", source = "collegeClass.branch.simpleBranch.shortForm")
+    @Mapping(target = "subjectName", source = "subject.shortForm")
+    @Mapping(target = "subjectAbbreviation", source = "subject.fullForm")
+    @Mapping(target = "semester", source = "collegeClass.semester")
+    @Mapping(target = "section", source = "collegeClass.section")
+    FacultyAssignmentResponse mapClassSubjectToFacultyAssignmentResponse(ClassSubject classSubject);
 }
