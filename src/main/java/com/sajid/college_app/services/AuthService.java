@@ -34,6 +34,7 @@ public class AuthService {
                 jwt,
                 "Bearer",
                 userDetails.getUsername(),
+                userDetails.getId(),
                 userDetails.getRole().name()
         ));
     }

@@ -9,5 +9,6 @@ public class JwtResponse {
     private String token;
     private String type;
     private String username;
+    private int userId;
     private String role;
 }

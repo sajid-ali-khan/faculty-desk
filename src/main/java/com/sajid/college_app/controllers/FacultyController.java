@@ -1,9 +1,9 @@
 package com.sajid.college_app.controllers;
 
 import com.sajid.college_app.dtos.FacultyResponse;
-import com.sajid.college_app.models.Faculty;
 import com.sajid.college_app.services.FacultyService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/faculties")
 @AllArgsConstructor
+@Slf4j
 public class FacultyController {
     private final FacultyService facultyService;
 
@@ -24,7 +25,7 @@ public class FacultyController {
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size
     ) {
-        List<FacultyResponse> faculties = null;
+        List<FacultyResponse> faculties;
         if (searchBy.equalsIgnoreCase("name")) {
             faculties = facultyService.searchFacultyByName(query, PageRequest.of(page, size));
         } else if (searchBy.equalsIgnoreCase("code")) {
@@ -41,6 +42,7 @@ public class FacultyController {
 
     @GetMapping("/{facultyId}/assignments")
     public ResponseEntity<?> getFacultyAssignments(@PathVariable("facultyId") int facultyId){
+        log.debug("GetFacultyAssignments: facultyId = {}", facultyId);
         return ResponseEntity.ok(facultyService.getFacultyAssignments(facultyId));
     }
 }

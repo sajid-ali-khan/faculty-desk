@@ -5,6 +5,11 @@ import com.sajid.college_app.models.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+
 @Mapper(componentModel = "spring")
 public interface AutoMapper {
     @Mapping(source="id", target="id")
@@ -38,4 +43,14 @@ public interface AutoMapper {
     @Mapping(target = "semester", source = "collegeClass.semester")
     @Mapping(target = "section", source = "collegeClass.section")
     FacultyAssignmentResponse mapClassSubjectToFacultyAssignmentResponse(ClassSubject classSubject);
+
+
+    SessionResponse mapSessionToSessionResponse(Session session);
+
+    default LocalDate instantToLocalDate(Instant instant) {
+        return instant == null
+                ? null
+                : instant.atZone(ZoneId.of("Asia/Kolkata")).toLocalDate();
+    }
+
 }
