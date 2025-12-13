@@ -34,4 +34,12 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(detailedSession);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteSession(
+            @RequestParam long sessionId
+    ){
+        sessionService.deleteSessionById(sessionId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

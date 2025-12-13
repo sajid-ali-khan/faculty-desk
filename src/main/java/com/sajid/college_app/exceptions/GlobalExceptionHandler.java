@@ -26,4 +26,12 @@ public class GlobalExceptionHandler {
                 "actualMessage", e.getMessage()
         ));
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e){
+        return ResponseEntity.status(404).body(Map.of(
+                "success", false,
+                "message", e.getMessage()
+        ));
+    }
 }

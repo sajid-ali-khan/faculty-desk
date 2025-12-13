@@ -64,4 +64,10 @@ public class SessionService {
 //        create the dto and return
         return autoMapper.mapSessionToDetailedSessionResponse(session);
     }
+
+    public void deleteSessionById(long sessionId) {
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Session with id = " + sessionId + " not found."));
+        sessionRepository.delete(session);
+    }
 }
