@@ -4,6 +4,7 @@ import com.sajid.college_app.dtos.*;
 import com.sajid.college_app.models.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.time.Instant;
 import java.time.LocalDate;

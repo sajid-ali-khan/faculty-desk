@@ -52,4 +52,12 @@ public class SessionController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{sessionId}")
+    public ResponseEntity<?> getDetailedSession(
+            @PathVariable("sessionId") long sessionId
+    ){
+        var detailedSession = sessionService.getDetailedSessionById(sessionId);
+        return ResponseEntity.ok(detailedSession);
+    }
+
 }

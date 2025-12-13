@@ -101,4 +101,10 @@ public class SessionService {
         sessionRepository.save(session);
         attendanceRecordRepository.saveAll(attendanceRecords);
     }
+
+    public DetailedSessionResponse getDetailedSessionById(long sessionId) {
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Session with id = " + sessionId + " not found."));
+        return autoMapper.mapSessionToDetailedSessionResponse(session);
+    }
 }
