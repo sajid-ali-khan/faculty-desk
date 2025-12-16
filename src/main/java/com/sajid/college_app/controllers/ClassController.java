@@ -27,4 +27,10 @@ public class ClassController {
         classService.updateAssignmentsByClassId(classId, request);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{classId}/report")
+    public ResponseEntity<?> getClassReport(@PathVariable("classId") Integer classId) {
+        var report = classService.getClassReport(classId);
+        return ResponseEntity.ok(report);
+    }
 }

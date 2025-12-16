@@ -1,12 +1,12 @@
 package com.sajid.college_app.services;
 
 import com.sajid.college_app.dtos.ClassAssignmentResponse;
+import com.sajid.college_app.dtos.StudentReport;
+import com.sajid.college_app.dtos.SubjectReport;
 import com.sajid.college_app.dtos.UpdateClassAssignmentsRequest;
 import com.sajid.college_app.exceptions.ResourceNotFoundException;
 import com.sajid.college_app.helpers.AutoMapper;
-import com.sajid.college_app.models.Branch;
-import com.sajid.college_app.models.ClassSubject;
-import com.sajid.college_app.models.CollegeClass;
+import com.sajid.college_app.models.*;
 import com.sajid.college_app.models.raw.RawStudent;
 import com.sajid.college_app.repositories.ClassRepository;
 import com.sajid.college_app.repositories.ClassSubjectRepository;
@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -101,5 +102,67 @@ public class ClassService {
         }
 
         classSubjectRepository.saveAll(updatedClassSubjects);
+    }
+
+    public Map<Integer, StudentReport> getClassReport(Integer classId) {
+        CollegeClass collegeClass = classRepository.findById(classId)
+                .orElseThrow(() -> new ResourceNotFoundException("Class with id " + classId + " not found"));
+
+        Map<Integer, StudentReport> reportMap = collegeClass.getStudents().stream()
+                .collect(Collectors.toMap(
+                        Student::getId,
+                        student -> new StudentReport(
+                                student.getId(),
+                                student.getRollNumber(),
+                                student.getName(),
+                                0.0,
+                                new HashMap<>()
+                        )
+                ));
+
+        for (ClassSubject classSubject: collegeClass.getClassSubjects()){
+            int subjectId = classSubject.getSubject().getId();
+            String subjectName = classSubject.getSubject().getShortForm();
+            for (Session session: classSubject.getSessionList()){
+                for (AttendanceRecord att: session.getAttendanceRecords()){
+                    int studentId =att.getStudent().getId();
+                    if (! reportMap.get(studentId).subjectsReports().containsKey(subjectId)){
+                        SubjectReport subjectReport = new SubjectReport(subjectId, subjectName);
+                        reportMap.get(studentId).subjectsReports().put(subjectId, subjectReport);
+                    }
+                    reportMap.get(studentId).subjectsReports().get(subjectId).totalCount += 1;
+                    if (att.isPresent()) {
+                        reportMap.get(studentId).subjectsReports().get(subjectId).presentCount += 1;
+                    }
+                }
+            }
+        }
+
+        for (StudentReport studentReport: reportMap.values()){
+            double totalPercentage = 0.0;
+            int subjectCount = studentReport.subjectsReports().size();
+            for (SubjectReport subjectReport: studentReport.subjectsReports().values()){
+                if (subjectReport.totalCount > 0){
+                    subjectReport.attendancePercentage = (subjectReport.presentCount * 100.0) / subjectReport.totalCount;
+                } else {
+                    subjectReport.attendancePercentage = 0.0;
+                }
+                totalPercentage += subjectReport.attendancePercentage;
+            }
+            if (subjectCount > 0){
+                double overallPercentage = totalPercentage / subjectCount;
+                // Update the overall percentage in the record
+                StudentReport updatedReport = new StudentReport(
+                        studentReport.studentId(),
+                        studentReport.studentRoll(),
+                        studentReport.studentName(),
+                        overallPercentage,
+                        studentReport.subjectsReports()
+                );
+                reportMap.put(studentReport.studentId(), updatedReport);
+            }
+        }
+
+        return reportMap;
     }
 }
