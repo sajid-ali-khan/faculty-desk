@@ -4,6 +4,7 @@ import com.sajid.college_app.dtos.FacultyResponse;
 import com.sajid.college_app.services.FacultyService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +23,26 @@ public class FacultyController {
     @GetMapping("/search")
     public ResponseEntity<?> searchFaculties(
             @RequestParam String query,
-            @RequestParam String searchBy,
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size
     ) {
         List<FacultyResponse> faculties;
-        if (searchBy.equalsIgnoreCase("name")) {
-            faculties = facultyService.searchFacultyByName(query, PageRequest.of(page, size));
-        } else if (searchBy.equalsIgnoreCase("code")) {
-            faculties = facultyService.searchFacultyByCode(query, PageRequest.of(page, size));
-        } else {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Invalid searchBy parameter. Use 'name' or 'code'."
-            ));
+        faculties = facultyService.searchByNameOrCode(query, PageRequest.of(page, size));
+        return ResponseEntity.ok(faculties);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllFaculties(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size,
+            @RequestParam(required = false) String query
+    ) {
+        log.debug("GetAllFaculties: page = {}, size = {}", page, size);
+        if (query == null || query.isEmpty()) {
+            Page<FacultyResponse> faculties = facultyService.getAllFaculties(PageRequest.of(page, size));
+            return ResponseEntity.ok(faculties);
         }
+        Page<FacultyResponse> faculties = facultyService.searchByNameOrCodeAndReturnAsPage(query, PageRequest.of(page, size));
         return ResponseEntity.ok(faculties);
     }
 

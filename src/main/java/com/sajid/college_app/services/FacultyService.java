@@ -11,7 +11,9 @@ import com.sajid.college_app.repositories.FacultyRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,22 +62,6 @@ public class FacultyService {
         }
     }
 
-    public List<FacultyResponse> searchFacultyByName(String name, PageRequest pageRequest) {
-        List<Faculty> faculties = facultyRepository.findByNameContainingIgnoreCase(name, pageRequest).getContent();
-        log.info("Found {} faculties matching name '{}'", faculties.size(), name);
-        return faculties.stream()
-                .map(autoMapper::mapFacultyToFacultyResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<FacultyResponse> searchFacultyByCode(String code, PageRequest pageRequest) {
-        List<Faculty> faculties = facultyRepository.findByFacultyCodeContainingIgnoreCase(code, pageRequest).getContent();
-        log.info("Found {} faculties matching code '{}'", faculties.size(), code);
-        return faculties.stream()
-                .map(autoMapper::mapFacultyToFacultyResponse)
-                .collect(Collectors.toList());
-    }
-
     public List<FacultyAssignmentResponse> getFacultyAssignments(int facultyId){
         List<ClassSubject> assignedClassSubjects = facultyRepository.findById(facultyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Faculty with Id " + facultyId + " not found."))
@@ -108,5 +94,19 @@ public class FacultyService {
             message = "Password reset successfully.";
         }
         return Pair.of(changed, message);
+    }
+
+    public Page<FacultyResponse> getAllFaculties(Pageable pageable){
+        return facultyRepository.findAll(pageable).map(autoMapper::mapFacultyToFacultyResponse);
+    }
+
+    public Page<FacultyResponse> searchByNameOrCodeAndReturnAsPage(String query, Pageable pageable){
+        return facultyRepository.findByQueryContainingIgnoreCase(query, pageable).map(autoMapper::mapFacultyToFacultyResponse);
+    }
+
+    public List<FacultyResponse> searchByNameOrCode(String query, Pageable pageable){
+        return facultyRepository.findByQueryContainingIgnoreCase(query, pageable).getContent()
+                .stream().map(autoMapper::mapFacultyToFacultyResponse)
+                .toList();
     }
 }

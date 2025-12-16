@@ -12,6 +12,10 @@ import org.springframework.stereotype.Repository;
 public interface StudentRepository extends JpaRepository<Student, Integer> {
     boolean existsByRollNumber(String rollNumber);
 
-    @Query("SELECT s FROM Student s WHERE s.name LIKE upper(concat('%',:name,'%'))")
-    Page<Student> findByNamePattern(@Param("name")String name, Pageable pageable);
+    @Query("""
+            select s from Student s
+            where lower(s.name) like lower(concat('%', :query, '%'))
+               or lower(s.rollNumber) like lower(concat('%', :query, '%'))
+            """)
+    Page<Student> findByNameContainingIgnoreCase(@Param("query") String query, Pageable pageable);
 }

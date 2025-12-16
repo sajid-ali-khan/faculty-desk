@@ -4,6 +4,8 @@ import com.sajid.college_app.models.Faculty;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -18,7 +20,11 @@ public interface FacultyRepository extends JpaRepository<Faculty, Integer> {
 
     List<Faculty> findByFacultyCodeIn(Collection<String> codes);
 
-    Page<Faculty> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    @Query("""
+            select f from Faculty f
+            where lower(f.name) like lower(concat('%', :query, '%'))
+               or lower(f.facultyCode) like lower(concat('%', :query, '%'))
+            """)
+    Page<Faculty> findByQueryContainingIgnoreCase(@Param("query")String query, Pageable pageable);
 
-    Page<Faculty> findByFacultyCodeContainingIgnoreCase(String facultyCode, Pageable pageable);
 }
