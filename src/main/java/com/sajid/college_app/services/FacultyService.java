@@ -1,13 +1,17 @@
 package com.sajid.college_app.services;
 
+import com.sajid.college_app.dtos.EnhancedFacultyAssignmentResponse;
 import com.sajid.college_app.dtos.FacultyAssignmentResponse;
 import com.sajid.college_app.dtos.FacultyResponse;
 import com.sajid.college_app.exceptions.ResourceNotFoundException;
 import com.sajid.college_app.helpers.AutoMapper;
 import com.sajid.college_app.models.ClassSubject;
+import com.sajid.college_app.models.CollegeClass;
 import com.sajid.college_app.models.Faculty;
+import com.sajid.college_app.models.Subject;
 import com.sajid.college_app.models.raw.Employee;
 import com.sajid.college_app.repositories.FacultyRepository;
+import com.sajid.college_app.repositories.SessionRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +31,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FacultyService {
     private final FacultyRepository facultyRepository;
+    private final SessionRepository sessionRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final AutoMapper autoMapper;
 
@@ -70,6 +75,65 @@ public class FacultyService {
         return assignedClassSubjects.stream()
                 .map(autoMapper::mapClassSubjectToFacultyAssignmentResponse)
                 .toList();
+    }
+
+    public List<EnhancedFacultyAssignmentResponse> getFacultyEnhancedAssignments(int facultyId) {
+        Faculty faculty = facultyRepository.findById(facultyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Faculty with Id " + facultyId + " not found."));
+
+        return faculty.getAssignedClassSubjects().stream()
+                .map(this::mapClassSubjectToEnhancedResponse)
+                .toList();
+    }
+
+    private EnhancedFacultyAssignmentResponse mapClassSubjectToEnhancedResponse(ClassSubject classSubject) {
+        long classSubjectId = classSubject.getId();
+
+        // Get basic assignment information
+        CollegeClass collegeClass = classSubject.getCollegeClass();
+        Subject subject = classSubject.getSubject();
+
+        // Query session statistics
+        int sessionsCount = sessionRepository.countSessionsByClassSubjectId(classSubjectId);
+        Integer totalPresentCount = sessionRepository.sumPresentCountByClassSubjectId(classSubjectId);
+        Integer totalAttendanceRecords = sessionRepository.sumTotalCountByClassSubjectId(classSubjectId);
+
+        // Handle null values from aggregate queries
+        int presentCount = totalPresentCount != null ? totalPresentCount : 0;
+        int totalRecords = totalAttendanceRecords != null ? totalAttendanceRecords : 0;
+
+        // Calculate average attendance percentage
+        double avgAttendancePercentage = 0.0;
+        if (totalRecords > 0) {
+            avgAttendancePercentage = (presentCount * 100.0) / totalRecords;
+        }
+
+        // Check if attendance was marked today
+        boolean markedToday = sessionRepository.existsSessionCreatedToday(
+                classSubjectId,
+                java.time.Instant.now()
+        );
+
+        String subjectType = subject.getSubjectType() != null
+                ? subject.getSubjectType().name()
+                : "THEORY";
+
+        return new EnhancedFacultyAssignmentResponse(
+                (int) classSubject.getId(),
+                collegeClass.getBranch().getSimpleBranch().getFullForm(),
+                collegeClass.getBranch().getSimpleBranch().getShortForm(),
+                subject.getFullForm(),
+                subject.getShortForm(),
+                subjectType,
+                collegeClass.getSemester(),
+                collegeClass.getSection(),
+                classSubjectId,
+                sessionsCount,
+                presentCount,
+                totalRecords,
+                Math.round(avgAttendancePercentage * 100.0) / 100.0,
+                markedToday
+        );
     }
 
     public FacultyResponse getFacultyById(int facultyId) {

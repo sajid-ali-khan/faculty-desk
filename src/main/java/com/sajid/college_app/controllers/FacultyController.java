@@ -62,6 +62,12 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getFacultyAssignments(facultyId));
     }
 
+    @GetMapping("/{facultyId}/assignments-enhanced")
+    public ResponseEntity<?> getFacultyEnhancedAssignments(@PathVariable("facultyId") int facultyId){
+        log.debug("GetFacultyEnhancedAssignments: facultyId = {}", facultyId);
+        return ResponseEntity.ok(facultyService.getFacultyEnhancedAssignments(facultyId));
+    }
+
     @PutMapping("/{facultyId}/reset-password" )
     public ResponseEntity<?> resetFacultyPassword(@PathVariable("facultyId") int facultyId, @RequestBody Map<String, String> requestBody){
         log.debug("ResetFacultyPassword: facultyId = {}", facultyId);

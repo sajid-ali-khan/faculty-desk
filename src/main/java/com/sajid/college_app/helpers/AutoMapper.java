@@ -71,4 +71,7 @@ public interface AutoMapper {
 
     @Mapping(target = "attendanceRecordMap", source = "attendanceRecords")
     DetailedSessionResponse mapSessionToDetailedSessionResponse(Session session);
+
+    @Mapping(target = "facultyName", source = "name")
+    EnhancedFacultyResponse mapFacultyToEnhancedFacultyResponse(Faculty faculty);
 }
