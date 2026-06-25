@@ -22,11 +22,6 @@ public class AdminSeeder implements ApplicationRunner {
         String adminUName="admin@gprec";
         String adminPassword = "admin@1584";
 
-        if (args.getOptionValues("seed") == null){
-            log.info("Admin seeder skipped.");
-            return;
-        }
-
         if (facultyRepository.existsByFacultyCode(adminUName)){
             log.info("Admin already exists.");
             return;

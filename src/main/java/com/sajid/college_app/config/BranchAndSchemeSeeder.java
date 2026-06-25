@@ -21,10 +21,6 @@ public class BranchAndSchemeSeeder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (args.getOptionValues("seed-schemes-branches") == null){
-            log.info("Branch and Scheme seeder skipped.");
-            return;
-        }
         if (seedSchemes()){
             log.info("Schemes seeded successfully.");
         }else{
