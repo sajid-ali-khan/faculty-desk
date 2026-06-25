@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main # Triggers the pipeline whenever you push to main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the source code
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Set up Java Environment
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    # 3. Build Spring Boot Executable Jar
+    - name: Build with Maven
+      run: mvn clean package -DskipTests
+
+    # 4. Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 5. Build the Docker Image & Push to Docker Hub
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/faculty-desk-backend:latest
+
+    # 6. SSH into EC2 and Deploy via Docker Compose
+    - name: Deploy to AWS EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}        # Your EC2 Public IP
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}     # Your complete .pem key content
+        script: |
+          cd ~/backend-stack
+          sudo docker compose pull api-service
+          sudo docker compose up -d

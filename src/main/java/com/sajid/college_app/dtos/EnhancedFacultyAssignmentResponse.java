@@ -9,6 +9,8 @@ public record EnhancedFacultyAssignmentResponse(
         String subjectType,
         int semester,
         String section,
+        int classId,
+        int subjectId,
         long classSubjectId,
         int sessionsCount,
         int presentCount,

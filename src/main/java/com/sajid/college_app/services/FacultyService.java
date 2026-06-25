@@ -127,6 +127,8 @@ public class FacultyService {
                 subjectType,
                 collegeClass.getSemester(),
                 collegeClass.getSection(),
+                collegeClass.getId(),
+                subject.getId(),
                 classSubjectId,
                 sessionsCount,
                 presentCount,
